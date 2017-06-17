@@ -1,19 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { getUserInfo, logout } from '../actions';
+import * as actions from "../actions/index";
+import { bindActionCreators } from 'redux';
 
-export default class Menu extends React.Component
+class Menu extends React.Component
 {
-
     constructor(props)
     {
         super(props);
+
+        this.checkLoginState = this.checkLoginState.bind(this);
+        this.facebookLogin = this.props.facebookLogin.bind(this);
     }
 
     componentDidMount()
     {
-        
+        console.log(this.props);
     }
 
     renderAuthorizedNavbar()
@@ -22,20 +25,47 @@ export default class Menu extends React.Component
 
     render()
     {
-        return (
-            <div className="side-menu">aa</div>
+        if (this.props.menuReducer.menuState === "welcome")
+        {
+            return (
+                <div className="side-menu">
+                    <div className="fb-login-button" data-size="medium" data-auto-logout-link="true" data-onlogin=
+                        "checkLoginState();"></div>
+                </div>
             )
+        }
+        else
+        {
+
+        }
     }
-}
 
-//const mapStateToProps = state => ({
-//    loading: state.userInfo.loading,
-//    userInfo: state.userInfo.userInfo
-//});
+    checkLoginState()
+    {
+        FB.getLoginStatus(function (response)
+        {
+            //statusChangeCallback(response);
+        });
 
-//const mapDispatchToProps = dispatch => ({
-//    getUserInfo: () => dispatch(getUserInfo),
-//    logout: () => dispatch(logout)
-//});
+        FB.api('/me', function (response)
+        {
+            console.log(JSON.stringify(response));
+        });
 
-//export default connect(mapStateToProps, mapDispatchToProps)(Footer);
+        this.facebookLogin;
+    };
+} 
+
+const mapDispatchToProps = (dispatch) =>
+{
+    return bindActionCreators(actions, dispatch);
+};
+
+const mapStateToProps = (state) =>
+{
+    return {
+        menuReducer: state.menuReducer
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);
