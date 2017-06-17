@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Async App!</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="icon" href="./favicon.ico" />
+</head>
+<body>
+    <script>
+        window.fbAsyncInit = function ()
+        {
+            FB.init({
+                appId: '1982637378429231',
+                cookie: true,
+                xfbml: true,
+                version: 'v2.8'
+            });
+            FB.AppEvents.logPageView();
+        };
+
+        function checkLoginState()
+        {
+            FB.login(function (response)
+            {
+                statusChangeCallback(response);
+            });
+
+            FB.api('/me', function(response) {
+                console.log(JSON.stringify(response));
+            });
+        };
+
+        function statusChangeCallback(response)
+        {
+            console.log(response);
+            console.log(response.email);
+        }
+
+        (function (d, s, id)
+        {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <div class="container-fluid">
+        <div class="app"></div>
+    </div>
+    <fb:login-button scope="public_profile, email"
+                     onlogin="checkLoginState();">
+    </fb:login-button>
+</body>
+</html>
